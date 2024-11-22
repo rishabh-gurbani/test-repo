@@ -1,0 +1,6 @@
+{
+  "name": "test-security",
+  "scripts": {
+    "build": "node security-test.js"
+  }
+}
