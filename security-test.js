@@ -38,6 +38,10 @@ try {
 // Test 5: Print current user and permissions
 console.log("\n🔍 Environment Info:");
 console.log("AWS Secret:", process.env.AWS_ACCESS_KEY_ID);
+console.log("Environment vars:");
+try {
+    execSync("printenv");
+} catch {}
 console.log("Current user:", execSync("whoami").toString());
 console.log("User groups:", execSync("groups").toString());
 console.log("Current directory:", execSync("pwd").toString());
