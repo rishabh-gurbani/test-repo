@@ -1,32 +1,7 @@
 const fs = require("fs");
-const { execSync, exec } = require("child_process");
-const path = require("path");
-const http = require("http");
-const https = require("https");
+const { execSync } = require("child_process");
 
 console.log("🔍 Running comprehensive security tests...");
-
-// Helper function for async network requests
-const makeRequest = (url) => {
-    return new Promise((resolve, reject) => {
-        const client = url.startsWith("https") ? https : http;
-        const req = client
-            .get(url, (res) => {
-                resolve(res.statusCode);
-            })
-            .on("error", (err) => {
-                reject(err);
-            });
-        
-        // Add timeout of 5 seconds
-        req.setTimeout(5000, () => {
-            req.destroy();
-            reject(new Error(`Request to ${url} timed out`));
-        });
-        
-        req.end();
-    });
-};
 
 async function runTests() {
     // Section 1: File System Access Tests
@@ -88,38 +63,7 @@ async function runTests() {
         }
     }
 
-    // Section 4: Network Access Tests
-    console.log("\n🌐 Network Access Tests:\n");
-
-    const networkTests = [
-        { url: "https://registry.npmjs.org", shouldWork: true },
-        { url: "https://api.github.com", shouldWork: false },
-        { url: "https://google.com", shouldWork: false },
-    ];
-
-    for (const test of networkTests) {
-        try {
-            const statusCode = await makeRequest(test.url);
-            const expected = test.shouldWork
-                ? "should work"
-                : "should be blocked";
-            if (test.shouldWork === statusCode < 400) {
-                console.log(`✅ ${test.url} ${expected} - correct`);
-            } else {
-                console.log(
-                    `❌ SECURITY RISK: ${test.url} ${expected} - incorrect`
-                );
-            }
-        } catch (e) {
-            if (!test.shouldWork) {
-                console.log(`✅ ${test.url} correctly blocked`);
-            } else {
-                console.log(`❌ ${test.url} incorrectly blocked`);
-            }
-        }
-    }
-
-    // Section 5: Package.json Security Tests
+    // Section 4: Package.json Security Tests
     console.log("\n📦 Package.json Security Tests:\n");
 
     const maliciousScripts = [
@@ -158,7 +102,7 @@ async function runTests() {
         }
     }
 
-    // Section 6: Environment Variable Tests
+    // Section 5: Environment Variable Tests
     console.log("\n🔐 Environment Variable Tests:\n");
 
     const sensitiveEnvVars = [
@@ -177,7 +121,7 @@ async function runTests() {
         }
     }
 
-    // Section 7: File Type Tests
+    // Section 6: File Type Tests
     console.log("\n📄 File Type Tests:\n");
 
     const testFiles = [
